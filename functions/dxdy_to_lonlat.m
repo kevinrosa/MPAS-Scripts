@@ -1,5 +1,7 @@
 function [lon_1, lat_1] = dxdy_to_lonlat(dx, dy, lon_0, lat_0)
-%LONLAT_TO_DXDY Summary of this function goes here
+%LONLAT_TO_DXDY 
+% [lon_1, lat_1] = dxdy_to_lonlat(dx, dy, lon_0, lat_0)
+%
 %   Given: dx and dy in km and lon_0 and lat_0 in degrees
 %   Returns: lon_1 and lat_1 in degrees
 %
