@@ -2,6 +2,8 @@ function [LON, LAT, FIELD] = mpas_to_lonlat_meshgrid(field_to_read, mesh_fi, dat
 %MPAS_TO_LONLAT_MESHGRID 
 %   Detailed explanation goes here
 %
+%   If t_ind==0, skips time index (e.g. if reading areaCell)
+%
 % Kevin Rosa
 % May 23, 2019
 
@@ -9,7 +11,11 @@ function [LON, LAT, FIELD] = mpas_to_lonlat_meshgrid(field_to_read, mesh_fi, dat
 % read field from MPAS file on unstructured grid
 [mpas.lon, mpas.lat] = read_mesh_file_lonlat(mesh_fi);
 
-mpas.field = ncread(data_fi, field_to_read, [1,t_ind], [Inf,1]);
+if t_ind>0
+    mpas.field = ncread(data_fi, field_to_read, [1,t_ind], [Inf,1]);
+elseif t_ind==0
+    mpas.field = ncread(data_fi, field_to_read, 1, Inf);
+end
 
 % create regular grid
 [LON, LAT] = make_lonlat_matrix(lon_vec, lat_vec);
