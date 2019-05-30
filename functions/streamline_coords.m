@@ -18,7 +18,7 @@ c = contourc(LON(:,1), LAT(1,:), DATA', CONTOUR*[1,1]);
 x = c(1,:);
 y = c(2,:);
 
-x(x == cont) = NaN; 
+x(x == CONTOUR) = NaN; 
 
 % want to find the largest continuous contour
 nan_inds = find(isnan(x));
