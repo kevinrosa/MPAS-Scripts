@@ -1,5 +1,9 @@
 function [lon, lat] = read_mesh_file_lonlat(fi)
 %READ_MESH_FILE_LONLAT Read lon and lat on cells and convert from radians to 180 deg coordinates
+% [lon, lat] = read_mesh_file_lonlat(fi)
+%
+% Kevin Rosa
+% June 3, 2019
 
 try 
     lon = rad2deg(ncread(fi, 'lonCell'));

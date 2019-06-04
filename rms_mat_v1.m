@@ -1,4 +1,4 @@
-% RMS of surface velocities
+% RMS of surface vvelocities
 % 
 % Kevin Rosa
 % May 29, 2019
@@ -6,15 +6,26 @@
 addpath(genpath('.'))
 
 i = 1;
-run(i).name = 'B case (fully coupled)';
-run(i).dir = '/scratch/mpeterse/runs/A_WCYC1850_ne30_oNAEC60to30cr8L60v1_anvil01/mpaso.hist.am.highFrequencyOutput/';
-run(i).mesh_fi = fullfile(run(i).dir, 'init.nc');
+run(i).name = 'Coastally-refined G case';
+run(i).short_name = 'var-res';
+run(i).dir = '/scratch/kanga/runs/GMPAS-IAF_T62_oNAEC60to30cr8L60v1_anvil01/mpaso.hist.am.highFrequencyOutput/';
+run(i).mesh_fi = '/scratch/kanga/runs/GMPAS-IAF_T62_oNAEC60to30cr8L60v1_anvil01/mpaso.rst.0001-08-01_00000.nc';
+run(i).years = 2:22;
+run(i).color = rgb('red');
+i = i+1;
+run(i).name = 'High-resolution G case';
+run(i).short_name = 'high-res';
+run(i).dir = '/scratch/kanga/runs/20180208.GMPAS-IAF.T62_oRRS18v3.anvil/mpaso.hist.am.highFrequencyOutput/';
+run(i).mesh_fi = '/scratch/kanga/runs/20180208.GMPAS-IAF.T62_oRRS18v3.anvil/ocean.oRRS18to6v3.scrip.181106.nc';
+run(i).years = 20:36;
 run(i).color = rgb('black');
 i = i+1;
-run(i).name = 'G case (CORE atmosphere)';
-run(i).dir = '/scratch/mpeterse/runs/GMPAS-IAF_T62_oNAEC60to30cr8L60v1_anvil01/mpaso.hist.am.highFrequencyOutput/';
-run(i).mesh_fi = fullfile(run(i).dir, 'init.nc');
-run(i).color = rgb('red');
+run(i).name = 'Low-resolution G case';
+run(i).short_name = 'low-res';
+run(i).dir = '/scratch/kanga/runs/20180305.GM600.T62_oECv3.eos/mpaso.hist.am.highFrequencyOutput/';
+run(i).mesh_fi = '/scratch/kanga/runs/20180305.GM600.T62_oECv3.eos/mpaso.rst.0050-01-01_00000.nc';
+run(i).years = 20:36;
+run(i).color = rgb('blue');
 
 %% transects
 j = 1;
@@ -53,7 +64,7 @@ end
 
 
 %%
-save_dir = 'figures/rms_v1';
+save_dir = 'figures/rms_mat_v0';
 
 xrange = [-85 -55];
 yrange = [lat_vec(1), lat_vec(end)];
@@ -67,10 +78,10 @@ white_cont = 0.4;
 %% convoluted way to make colormap 
 conts = crange(1):0.05:crange(end);
 cmap = jet(length(conts)-1);
-vals = (conts(1:end-1)+conts(2:end))/2;
-inds = vals<=white_cont;
-cmap(inds,:) = repmat([1,1,1],length(find(inds)),1);
-cmap(~inds,:) = jet(length(find(~inds)));
+% vals = (conts(1:end-1)+conts(2:end))/2;
+% inds = vals<=white_cont;
+% cmap(inds,:) = repmat([1,1,1],length(find(inds)),1);
+% cmap(~inds,:) = jet(length(find(~inds)));
 
 %%
 for i = 1:length(run)
@@ -83,7 +94,7 @@ m_proj('lambert','long',xrange,'lat',yrange);
 m_pcolor(run(i).lon, run(i).lat, run(i).speed_rms)
 
 hold on
-% m_contour(run(i).lon, run(i).lat, run(i).speed_rms, rms_cont*[1,1], 'color','w','linewidth',2)
+m_contour(run(i).lon, run(i).lat, run(i).speed_rms, rms_cont*[1,1], 'color','w','linewidth',2)
 
 m_gshhs_i('patch',0.8*[1,1,1],'edgecolor','k');
 % m_grid('linestyle','none','linewidth',2,'tickdir','out','fontsize',14)
@@ -104,7 +115,7 @@ set(gca,'fontsize',FS)
 
 colormap(cmap)
 
-saveas(gcf, fullfile(save_dir, sprintf('speed_rms_pcolor_%s_showtransects_v1.png', run(i).name)))
+saveas(gcf, fullfile(save_dir, sprintf('speed_rms_pcolor_%s_showtransects_v0.png', run(i).short_name)))
 end
 
 %%
@@ -117,23 +128,23 @@ m_gshhs_i('patch',0.8*[1,1,1],'edgecolor','k');
 m_grid('linestyle','none','box','fancy','tickdir','out','fontsize',FS)
 
 hold on
-for i = 1:2
+for i = 1:2%length(run)
     
     [~,handle(i)] = m_contour(run(i).lon, run(i).lat, run(i).speed_rms, rms_cont*[1,1], 'color',run(i).color,'linewidth',2);
     
 end
 
-for j = 1:length(transect)
+for j = 1:2%length(transect)
     m_line(transect(j).lon, transect(j).lat, 'color',rgb('red'),'linewidth',2,'marker','o','markerfacecolor','w')
 end
 
-title(sprintf('%.1f m/s RMS Contours: NA8 vs. CUSP8',rms_cont))
+title(sprintf('%.1f m/s RMS Contours: %s vs. %s',rms_cont,run(1).short_name,run(2).short_name))
 
 set(gca,'fontsize',FS)
 
 % m_legend(handle, run(:).name)
 
-saveas(gcf, fullfile(save_dir, sprintf('speed_rms_contours_2runs_showtransects_v1.png')))
+saveas(gcf, fullfile(save_dir, sprintf('speed_rms_contours_showtransects_v1.png')))
 
 %%
 %
@@ -143,7 +154,7 @@ saveas(gcf, fullfile(save_dir, sprintf('speed_rms_contours_2runs_showtransects_v
 %% Gulf stream pathlines
 % run(i).S will hold streamline info
 
-years = 7:10;
+years = 7:14;
 ssh_contour = -0.2;
 runs = 1:2;  % run indices to run calculation on
 
@@ -175,39 +186,39 @@ for i = 1:length(run)
 end
 
 %% Plotting
-i = 1;
-figure(300+i)
-clf
-set(gcf,'color','w','position',[50 354 888 585])
+for i = 1:length(run)
+    figure(300+i)
+    clf
+    set(gcf,'color','w','position',[50 354 888 585])
 
-xrange = [-77 -67];
-yrange = [34 42];
+    xrange = [-77 -64];%-67];
+    yrange = [34 42];
 
-m_proj('lambert','long',xrange,'lat',yrange);
+    m_proj('lambert','long',xrange,'lat',yrange);
 
-m_gshhs_i('patch',0.8*[1,1,1],'edgecolor','k');
-m_grid('linestyle','none','box','fancy','tickdir','out','fontsize',FS)
+    m_gshhs_i('patch',0.8*[1,1,1],'edgecolor','k');
+    m_grid('linestyle','none','box','fancy','tickdir','out','fontsize',FS)
 
-hold on
-for k = 1:max(run(i).S.file_number)
-    inds = run(i).S.file_number == k;
+    hold on
+    for k = 1:max(run(i).S.file_number)
+        inds = run(i).S.file_number == k;
 
-    m_line(run(i).S.lon(inds), run(i).S.lat(inds), 'color',run(i).color)
+        m_line(run(i).S.lon(inds), run(i).S.lat(inds), 'color',run(i).color)
 
+    end
+
+
+    for j = 1:length(transect)
+        m_line(transect(j).lon, transect(j).lat, 'color',rgb('red'),'linewidth',2,'marker','o','markerfacecolor','w')
+    end
+
+    pause(0.1)
+    title(sprintf('%s SSH %.1f m Years %i-%i', run(i).name, ssh_contour, years(1), years(end)))
+
+    set(gca,'fontsize',FS)
+    
+    saveas(gcf, fullfile(save_dir, sprintf('streamlines_%s_v0.png',run(i).short_name)))
 end
-
-
-for j = 1:length(transect)
-    m_line(transect(j).lon, transect(j).lat, 'color',rgb('red'),'linewidth',2,'marker','o','markerfacecolor','w')
-end
-
-title(sprintf('%s SSH %.1f m Years %i-%i', run(i).name, ssh_contour, years(1), years(end)))
-
-set(gca,'fontsize',FS)
-
-% m_legend(handle, run(:).name)
-%%
-saveas(gcf, fullfile(save_dir, sprintf('streamlines_%s_v1.png',run(i).name)))
 
 
 
