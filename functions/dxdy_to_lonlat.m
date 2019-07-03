@@ -14,8 +14,8 @@ lat_ref = lat_0;
 A = (pi/180) * R * cosd(lat_ref);  % dist (km) per degree longitude
 B = (pi/180) * R;  % dist (km) per degree latitude
 
-dlon = dx / A;
-dlat = dy / B;
+dlon = dx ./ A;
+dlat = dy ./ B;
 
 lon_1 = lon_0 + dlon;
 lat_1 = lat_0 + dlat;

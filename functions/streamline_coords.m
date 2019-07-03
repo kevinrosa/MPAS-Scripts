@@ -1,5 +1,6 @@
 function [contour_lon, contour_lat] = streamline_coords(LON, LAT, DATA, CONTOUR)
 %STREAMLINE_COORDS Returns longest continuous contour line
+% [contour_lon, contour_lat] = streamline_coords(LON, LAT, DATA, CONTOUR)
 %  
 %   LON, LAT, and DATA must be a transposed meshgrid (DATA' is a meshgrid).
 %   
