@@ -100,7 +100,7 @@ for i = 1:length(run)
         
         fprintf('%s %.1f%s\n', run(i).short_name, 100*tt/t_length, '%')
         tt = tt+1;
-    end
+   end
     
     run(i).speed_rms = squeeze(rms(run(i).speed, 1));
 end
